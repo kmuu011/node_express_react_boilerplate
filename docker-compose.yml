@@ -1,0 +1,34 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:1.15
+    links:
+     - node:node
+    ports:
+     - "80:80"
+#     - "443:443"
+    volumes:
+     - ./nginx/html:/usr/share/nginx/html
+     - ./nginx/config:/etc/nginx
+    expose:
+     - "80"
+#     - "443"
+    container_name: "nginx"
+
+
+  node:
+    image: "node:14.15.1"
+    ports:
+    - "22222"
+    working_dir: /home/node/app
+    volumes:
+    - ./node:/home/node/app
+
+    environment:
+      TZ: "Asia/Seoul"
+
+    command: "npm start"
+    expose:
+    - "22222"
+    restart: always
+    container_name: "node"
