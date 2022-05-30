@@ -22,7 +22,7 @@ services:
     - "22222"
     working_dir: /home/node/app
     volumes:
-    - ./node:/home/node/app
+    - ./Node:/home/node/app
 
     environment:
       TZ: "Asia/Seoul"
