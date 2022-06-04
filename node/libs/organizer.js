@@ -2,7 +2,7 @@ const organizer = {};
 
 const mysql = require('mysql');
 
-let sql_creator = async (data, key) => {
+let sql_creator = (data, key) => {
     let sql_col = '';
     let sql_val = '';
     let sql_set = '';
@@ -18,7 +18,7 @@ let sql_creator = async (data, key) => {
     return { sql_col, sql_val, sql_set };
 };
 
-organizer.get_sql = async (data_obj, require_keys, optional_keys) => {
+organizer.get_sql = (data_obj, require_keys, optional_keys) => {
     let sql_col = '';
     let sql_val = '';
     let sql_set = '';
@@ -26,8 +26,8 @@ organizer.get_sql = async (data_obj, require_keys, optional_keys) => {
     if(require_keys !== undefined) {
         require_keys = require_keys.replace(/\s/g, '').split(',');
 
-        for (let k of require_keys) {
-            let sql_piece = await sql_creator(data_obj[k], k);
+        for (const k of require_keys) {
+            let sql_piece = sql_creator(data_obj[k], k);
 
             sql_col += sql_piece.sql_col;
             sql_val += sql_piece.sql_val;
@@ -38,10 +38,10 @@ organizer.get_sql = async (data_obj, require_keys, optional_keys) => {
     if(optional_keys !== undefined){
         optional_keys = optional_keys.replace(/\s/g, '').split(',');
 
-        for(let k of optional_keys){
+        for(const k of optional_keys){
             if(data_obj[k] === undefined) continue;
 
-            let sql_piece = await sql_creator(data_obj[k], k);
+            let sql_piece = sql_creator(data_obj[k], k);
 
             sql_col += sql_piece.sql_col;
             sql_val += sql_piece.sql_val;

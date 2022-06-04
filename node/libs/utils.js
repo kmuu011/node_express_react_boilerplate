@@ -8,26 +8,25 @@ const fs = require('fs');
 const mysql = require('mysql');
 const db = require(`libs/db`);
 
-let sql;
-
 utils.unique_check = async (table_name, key, col) => {
     if(col === undefined) col = 'idx';
 
-    sql = "SELECT idx FROM " + table_name + " WHERE " + col + " = ?";
+    let sql = "SELECT idx " +
+        "FROM " + table_name + " WHERE " + col + " = ?";
     sql = mysql.format(sql, [key]);
 
-    let dup_check = await db.query(sql);
+    const dup_check = await db.query(sql);
 
     return dup_check.length === 0;
 };
 
-utils.create_key = async (count) => {
+utils.create_key = (count) => {
     count = parseInt(count) || 20;
 
     let key = '';
 
     for (let i=0; i<count; i++) {
-        let ran_int = parseInt(Math.random() * ran_str.length);
+        const ran_int = parseInt(Math.random() * ran_str.length);
 
         key += ran_str[ran_int];
     }
@@ -69,12 +68,12 @@ utils.file_delete = async (key_list) => {
     return true;
 };
 
-utils.file_arranger = async (files) => {
-    let storage = {};
+utils.file_arranger = (files) => {
+    const storage = {};
 
     if(files !== undefined) {
-        for (let f of files) {
-            let k = f.fieldname;
+        for (const f of files) {
+            const k = f.fieldname;
 
             if (k === undefined) {
                 throw Message.WRONG_PARAM('파일 구분');
@@ -91,19 +90,19 @@ utils.file_arranger = async (files) => {
     return storage;
 };
 
-utils.object_delete_undefined = async (data_obj) => {
-    for(let k in data_obj){
+utils.object_delete_undefined = (data_obj) => {
+    for(const k in data_obj){
         if(data_obj[k] === undefined) delete data_obj[k];
     }
 };
 
-utils.arrange_data = async (data) => {
+utils.arrange_data = (data) => {
     if(data.constructor === Array){
         for(let v of data){
             if(v === undefined) continue;
 
             if((v.constructor === Array && v.length !== 0) || v.constructor === Object){
-                v = await utils.arrange_data(v);
+                v = utils.arrange_data(v);
             }
 
             if(v !== undefined && v.constructor === String){
@@ -111,11 +110,11 @@ utils.arrange_data = async (data) => {
             }
         }
     }else if(data.constructor === Object || Object.keys(data).length !== 0){
-        for(let k in data){
+        for(const k in data){
             if(data[k] === undefined) continue;
 
             if((data[k].constructor === Array && data[k].length !== 0) || data[k].constructor === Object){
-                data[k] = await utils.arrange_data(data[k]);
+                data[k] = utils.arrange_data(data[k]);
             }
 
             if(data[k] !== undefined && data[k].constructor === String){
@@ -123,8 +122,6 @@ utils.arrange_data = async (data) => {
             }
         }
     }
-
-    return data;
 };
 
 

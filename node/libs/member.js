@@ -1,4 +1,4 @@
-let member = {};
+const member = {};
 
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -8,14 +8,14 @@ const cipher = require(`libs/cipher`);
 
 const dao_member = require(`dao/member/member`);
 
-let salt = config.member.salt;
+const salt = config.member.salt;
 
-let jwt_secret = config.member.jwt_secret;
-let expire_time = 60*60*24*30;
+const jwt_secret = config.member.jwt_secret;
+const expire_time = 60*60*24*30;
 
 let login_check = async (req, res) => {
     let check;
-    let token = req.headers['x-token'];
+    const token = req.headers['x-token'];
 
     if(token === undefined || token === null || token === 'undefined' || token === 'null'){
         throw Message.UNAUTHORIZED
@@ -30,13 +30,13 @@ let login_check = async (req, res) => {
     req.member = await dao_member.select_member(check.idx);
 
     if(check.keep_check === true){
-        let now = Date.now()/1000;
-        let time = check.time/1000;
+        const now = Date.now()/1000;
+        const time = check.time/1000;
 
         req.member.keep_check = true;
 
         if(now - time > (60*60*24)) {
-            let new_token = await member.token(req.member);
+            const new_token = await member.token(req.member);
             res.header('x-new-token', new_token);
         }
     }
@@ -47,10 +47,10 @@ member.encrypt = async (password) => {
 };
 
 member.token = async (member) => {
-    let { idx, id, nickname, created_at } = member;
-    let time = Date.now();
+    const { idx, id, nickname, created_at } = member;
+    const time = Date.now();
 
-    let token = jwt.sign({ id, idx, nickname, created_at, time }, jwt_secret, { expiresIn : expire_time });
+    const token = jwt.sign({ id, idx, nickname, created_at, time }, jwt_secret, { expiresIn : expire_time });
 
     return await cipher.encrypt(token);
 };

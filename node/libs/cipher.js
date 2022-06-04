@@ -7,8 +7,8 @@ const crypto = require('crypto');
 const cipher_key = config.cipher.key;
 
 cipher.encrypt = async (text) => {
-    let cipher_iv = crypto.randomBytes(16);
-    let enc = crypto.createCipheriv(config.cipher.two_way_algorithm, Buffer.from(cipher_key), cipher_iv);
+    const cipher_iv = crypto.randomBytes(16);
+    const enc = crypto.createCipheriv(config.cipher.two_way_algorithm, Buffer.from(cipher_key), cipher_iv);
     let encrypted = enc.update(text);
 
     encrypted = Buffer.concat([encrypted, enc.final()]);
@@ -17,10 +17,10 @@ cipher.encrypt = async (text) => {
 };
 
 cipher.decrypt = async (text) => {
-    let textParts = text.split(':');
-    let iv = Buffer.from(textParts.shift(), 'hex');
-    let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    let decipher = crypto.createDecipheriv(config.cipher.two_way_algorithm, Buffer.from(cipher_key), iv);
+    const textParts = text.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv(config.cipher.two_way_algorithm, Buffer.from(cipher_key), iv);
     let decrypted = decipher.update(encryptedText);
 
     decrypted = Buffer.concat([decrypted, decipher.final()]);
